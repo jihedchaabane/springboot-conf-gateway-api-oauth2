@@ -1,4 +1,4 @@
-package com.chj.gr.conf;
+package com.chj.gr.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
@@ -16,6 +16,8 @@ public class SecurityConfig {
             
             .pathMatchers("/ms1/api/public/**").permitAll()
             .pathMatchers("/ms2/api/public/**").permitAll()
+            .pathMatchers("/call/public/ms1/api/public/hello").permitAll()
+            .pathMatchers("/call/public/ms2/api/public/hello").permitAll()
             
             .anyExchange().authenticated()
             .and()
