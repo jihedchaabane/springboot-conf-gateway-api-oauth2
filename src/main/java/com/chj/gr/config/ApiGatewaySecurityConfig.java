@@ -13,6 +13,27 @@ public class ApiGatewaySecurityConfig {
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         http
+        	/**
+        	 * API Gateways typically handle stateless REST APIs, where CSRF protection is unnecessary
+        	 * 		because requests are authenticated via tokens (e.g., JWT, OAuth2)
+        	 * 		rather than session-based authentication.
+        	 * If CSRF is enabled, it expects a CSRF token for state-changing requests,
+        	 * 		which may not be provided by clients.
+        	 * 
+        	 * 
+        	 * gr-oauth2-demo ==> gr-resource-consumer-webclient
+        	 * 			==> springboot-conf-gateway-api-oauth2
+        	 * 			==> springboot-conf-sts-authorization-server-db     ========> CSRF ERROR.
+[reactor-http-nio-7] DEBUG org.springframework.security.web.server.util.matcher.AndServerWebExchangeMatcher.method:61 - Trying to match using org.springframework.security.web.server.csrf.CsrfWebFilter$DefaultRequireCsrfProtectionMatcher@6b542c47
+[reactor-http-nio-7] DEBUG org.springframework.security.web.server.util.matcher.AndServerWebExchangeMatcher.method:66 - Did not match
+[reactor-http-nio-7] DEBUG org.springframework.security.web.server.authentication.AuthenticationWebFilter.method:127 - Authentication failed: Failed to validate the token
+
+			 *
+			 * gr-oauth2-demo ==> gr-resource-consumer-webclient
+        	 * 			==> springboot-conf-gateway-api-oauth2
+        	 * 			==> gr-oauth2-demo ==> gr-auth-server    			========> NOO CSRF ERROR.
+        	 */
+        	.csrf().disable() // Disable CSRF for stateless APIs
             .authorizeExchange()
             .pathMatchers("/ms1/gr-ms1-resource/public/**").permitAll()
             .pathMatchers("/ms2/gr-ms2-resource/public/**").permitAll()
